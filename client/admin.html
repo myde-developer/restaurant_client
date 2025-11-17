@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin • Àṣà Heritage Kitchen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body class="admin-body">
+
+  <!-- Login Screen -->
+  <div id="loginBox" class="login-box">
+    <h2>Admin Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <p id="loginMsg" style="margin-top:15px; font-weight:bold;"></p>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="dashboard" class="dashboard" style="display:none;">
+    <div class="dash-header">
+      <h1>Àṣà Heritage Kitchen – Admin Panel</h1>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="dash-nav">
+      <button class="active" onclick="openTab('menu')">Menu Items</button>
+      <button onclick="openTab('categories')">Categories</button>
+      <button onclick="openTab('feedback')">Feedback</button>
+      <button onclick="openTab('orders')">Orders</button>
+    </div>
+
+    <div class="container">
+      <!-- Menu Items Tab -->
+      <div id="menu" class="tab active">
+        <h2>Menu Items</h2>
+        <table id="menuTable">
+          <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Available</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Categories Tab -->
+      <div id="categories" class="tab">
+        <h2>Categories</h2>
+        <table id="catTable">
+          <thead><tr><th>Name</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Feedback Tab -->
+      <div id="feedback" class="tab">
+        <h2>Customer Reviews</h2>
+        <table id="feedbackTable">
+          <thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Orders Tab -->
+      <div id="orders" class="tab">
+        <h2>Customer Orders</h2>
+        <table id="ordersTable">
+          <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
