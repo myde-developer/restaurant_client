@@ -165,14 +165,18 @@ if (document.getElementById("loginBox")) {
   }
 
   window.login = async () => {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try {
     const res = await fetch(`${BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     });
+
     const data = await res.json();
+
     if (data.token) {
       localStorage.setItem("asaToken", data.token);
       location.reload();
@@ -180,7 +184,11 @@ if (document.getElementById("loginBox")) {
       document.getElementById("loginMsg").textContent = "Wrong credentials";
       document.getElementById("loginMsg").style.color = "#d32f2f";
     }
-  };
+  } catch (error) {
+    console.error("Login error:", error);
+    document.getElementById("loginMsg").textContent = "Server error, try again later";
+  }
+};
 
   window.logout = () => { localStorage.removeItem("asaToken"); location.reload(); };
 
