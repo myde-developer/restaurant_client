@@ -10,22 +10,19 @@
 </head>
 <body class="admin-body">
 
-  <!-- Login Screen -->
   <div id="loginBox" class="login-box">
     <h2>Admin Login</h2>
-    <input type="text" id="username" placeholder="Username" required />
-    <input type="password" id="password" placeholder="Password" required />
+    <input type="text" id="username" placeholder="Username" value="admin" />
+    <input type="password" id="password" placeholder="Password" value="asaheritage2025" />
     <button onclick="login()">Login</button>
-    <p id="loginMsg" style="margin-top:15px; font-weight:bold;"></p>
+    <p id="loginMsg" style="margin-top:15px;font-weight:bold;"></p>
   </div>
 
-  <!-- Admin Dashboard -->
   <div id="dashboard" class="dashboard" style="display:none;">
     <div class="dash-header">
       <h1>Our Heritage Kitchen – Admin Panel</h1>
       <button class="logout" onclick="logout()">Logout</button>
     </div>
-
     <div class="dash-nav">
       <button class="active" onclick="openTab('menu')">Menu Items</button>
       <button onclick="openTab('categories')">Categories</button>
@@ -34,44 +31,45 @@
     </div>
 
     <div class="container">
-      <!-- Menu Items Tab -->
       <div id="menu" class="tab active">
         <h2>Menu Items</h2>
+        <div style="background:#f9f9f9;padding:20px;border-radius:10px;margin-bottom:30px;">
+          <h3>Add New Menu Item</h3>
+          <select id="newCategoryId" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;"></select>
+          <input type="text" id="newName" placeholder="Item Name" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+          <input type="number" id="newPrice" placeholder="Price (₦)" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+          <input type="text" id="newDesc" placeholder="Description (optional)" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+          <input type="text" id="newImage" placeholder="Image URL (optional)" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+          <select id="newAvailable" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+            <option value="true">Available</option>
+            <option value="false">Not Available</option>
+          </select>
+          <button onclick="addMenuItem()" style="background:#006400;color:white;padding:12px 30px;border:none;border-radius:8px;margin-top:10px;cursor:pointer;">Add Item</button>
+        </div>
         <table id="menuTable">
-          <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Available</th></tr></thead>
+          <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Available</th><th>Actions</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <!-- Categories Tab -->
       <div id="categories" class="tab">
         <h2>Categories</h2>
+        <div style="background:#f9f9f9;padding:20px;border-radius:10px;margin-bottom:30px;">
+          <h3>Add New Category</h3>
+          <input type="text" id="newCatName" placeholder="Category Name" style="width:70%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+          <button onclick="addCategory()" style="background:#006400;color:white;padding:12px 30px;border:none;border-radius:8px;cursor:pointer;">Add Category</button>
+        </div>
         <table id="catTable">
-          <thead><tr><th>Name</th></tr></thead>
+          <thead><tr><th>Name</th><th>Actions</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <!-- Feedback Tab -->
-      <div id="feedback" class="tab">
-        <h2>Customer Reviews</h2>
-        <table id="feedbackTable">
-          <thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <!-- Orders Tab -->
-      <div id="orders" class="tab">
-        <h2>Customer Orders</h2>
-        <table id="ordersTable">
-          <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <div id="feedback" class="tab"><h2>Customer Reviews</h2><table id="feedbackTable"><thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead><tbody></tbody></table></div>
+      <div id="orders" class="tab"><h2>Customer Orders</h2><table id="ordersTable"><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>

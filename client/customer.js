@@ -2,7 +2,7 @@ const BASE_URL = "https://restaurant-menu-1-60u0.onrender.com";
 
 let cart = [];
 
-// ============= CUSTOMER PAGE (index.html) =============
+// ============= CUSTOMER PAGE =============
 if (document.getElementById("categories")) {
   document.addEventListener("DOMContentLoaded", async () => {
     await Promise.all([loadMenu(), loadReviews()]);
@@ -152,93 +152,5 @@ if (document.getElementById("categories")) {
   const showCategory = name => {
     document.querySelectorAll(".categories button").forEach(b => b.classList.toggle("active", b.textContent === name));
     document.querySelectorAll(".category-section").forEach(s => s.classList.toggle("active", s.querySelector(".category-title").textContent === name));
-  };
-}
-
-// ============= ADMIN PAGE (admin.html) =============
-if (document.getElementById("loginBox")) {
-  const token = localStorage.getItem("asaToken");
-  if (token) {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-    loadAdminData();
-  }
-
-  window.login = async () => {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
-    });
-
-    const data = await res.json();
-
-    if (data.token) {
-      localStorage.setItem("asaToken", data.token);
-      location.reload();
-    } else {
-      document.getElementById("loginMsg").textContent = "Wrong credentials";
-      document.getElementById("loginMsg").style.color = "#d32f2f";
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-    document.getElementById("loginMsg").textContent = "Server error, try again later";
-  }
-};
-
-  window.logout = () => { localStorage.removeItem("asaToken"); location.reload(); };
-
-  window.openTab = (id) => {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".dash-nav button").forEach(b => b.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-    document.querySelector(`button[onclick="openTab('${id}')"]`).classList.add("active");
-    if (id === "menu") loadMenuItems();
-    if (id === "categories") loadCategories();
-    if (id === "feedback") loadFeedback();
-    if (id === "orders") loadOrders();
-  };
-
-  const loadAdminData = () => { loadMenuItems(); loadCategories(); loadFeedback(); loadOrders(); };
-
-  const loadMenuItems = async () => {
-    const { data } = await (await fetch(`${BASE_URL}/api/menu`)).json();
-    document.querySelector("#menuTable tbody").innerHTML = data.map(i =>
-      `<tr><td>${i.name}</td><td>₦${Number(i.price).toLocaleString()}</td><td>${i.category_name}</td><td>${i.is_available ? "Yes" : "No"}</td></tr>`
-    ).join("");
-  };
-
-  const loadCategories = async () => {
-    const { data } = await (await fetch(`${BASE_URL}/api/menu`)).json();
-    const cats = [...new Set(data.map(i => i.category_name))];
-    document.querySelector("#catTable tbody").innerHTML = cats.map(c => `<tr><td>${c}</td></tr>`).join("");
-  };
-
-  const loadFeedback = async () => {
-    const { data = [] } = await (await fetch(`${BASE_URL}/api/feedbacks`)).json();
-    document.querySelector("#feedbackTable tbody").innerHTML = data.map(f =>
-      `<tr><td>${f.customer_name}</td><td>${"★".repeat(f.rating)}${"☆".repeat(5-f.rating)}</td><td>${f.comment}</td><td>${new Date(f.created_at).toLocaleDateString()}</td></tr>`
-    ).join("");
-  };
-
-  const loadOrders = async () => {
-    const { data = [] } = await (await fetch(`${BASE_URL}/api/orders`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })).json();
-    document.querySelector("#ordersTable tbody").innerHTML = data.length ? data.map(o =>
-      `<tr>
-        <td>${o.id}</td>
-        <td>${o.customer_name}</td>
-        <td>${o.customer_phone}</td>
-        <td>${o.delivery_address}</td>
-        <td>₦${Number(o.total_price).toLocaleString()}</td>
-        <td>${new Date(o.created_at).toLocaleDateString()}</td>
-        <td>${JSON.parse(o.items || "[]").map(x => x.name + " ×" + x.quantity).join(", ")}</td>
-      </tr>`
-    ).join("") : "<tr><td colspan='7' style='text-align:center;color:#666'>No orders yet</td></tr>";
   };
 }
