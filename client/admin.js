@@ -169,15 +169,19 @@ const loadMenuItems = async () => {
 // ============= FEEDBACK & ORDERS =============
 const loadFeedback = async () => {
   const { data = [] } = await (await fetch(`${BASE_URL}/api/feedbacks`)).json();
+  
   safeSetHTML("#feedbackTable tbody", data.map(f => `
     <tr>
       <td>${f.customer_name}</td>
-      <td>${"Star".repeat(f.rating)}${"Empty".repeat(5-f.rating)}</td>
+      <td class="admin-stars">
+        ${"<i class='fas fa-star'></i>".repeat(f.rating)}
+        ${"<i class='far fa-star'></i>".repeat(5 - f.rating)}
+      </td>
       <td>${f.comment}</td>
       <td>${new Date(f.created_at).toLocaleDateString()}</td>
-    </tr>`).join(""));
+    </tr>
+  `).join("") || "<tr><td colspan='4' style='text-align:center;padding:30px;color:#888'>No reviews yet</td></tr>");
 };
-
 const loadOrders = async () => {
   const res = await fetch(`${BASE_URL}/api/orders`, { headers: { Authorization: `Bearer ${adminToken}` } });
   const { data = [] } = await res.json();
