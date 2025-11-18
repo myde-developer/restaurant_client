@@ -1,6 +1,6 @@
 const BASE_URL = "https://restaurant-menu-1-60u0.onrender.com";
 let cart = [];
-// ============= CUSTOMER PAGE =============
+// ============= ADMIN PAGE =============
 const adminToken = localStorage.getItem("asaToken");
 let categories = [];
 
