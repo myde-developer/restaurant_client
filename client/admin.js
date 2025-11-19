@@ -61,17 +61,35 @@ const safeSetHTML = (selector, html) => {
 
 // ============= CATEGORIES =============
 const loadCategories = async () => {
-  const { data } = await (await fetch(`${BASE_URL}/api/category`)).json();
-  categories = data || [];
-  const sel = document.getElementById("newCategoryId");
-  if (sel) sel.innerHTML = `<option value="">Select Category</option>` + data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
-  safeSetHTML("#catTable tbody", data.map(c => `
-    <tr><td>${c.name}</td>
-    <td>
-      <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g,"\\'")}')">Edit</button>
-      <button onclick="deleteCategory(${c.id})">Delete</button>
-    </td></tr>
-  `).join("") || "<tr><td colspan='2'>No categories</td></tr>");
+  try {
+    const res = await fetch(`${BASE_URL}/api/category`);
+    const { data } = await res.json();
+    categories = data || [];
+
+    const dropdown = document.getElementById("newCategoryId");
+    if (dropdown) {
+      dropdown.innerHTML = `
+        <option value="">Select Category</option>
+        ${data.map(c => `<option value="${c.id}">${c.name}</option>`).join("")}
+      `;
+    }
+
+    // Update Categories table
+    safeSetHTML("#catTable tbody", data.map(c => `
+      <tr>
+        <td>${c.name}</td>
+        <td>
+          <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g,"\\'")}')" 
+                  style="background:#ffbf00;padding:8px 16px;border:none;border-radius:6px;margin:2px;cursor:pointer;">Edit</button>
+          <button onclick="deleteCategory(${c.id})" 
+                  style="background:#d32f2f;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;">Delete</button>
+        </td>
+      </tr>
+    `).join("") || "<tr><td colspan='2' style='text-align:center;padding:30px;color:#888'>No categories yet</td></tr>");
+
+  } catch (err) {
+    console.error("Failed to load categories:", err);
+  }
 };
 
 // ADD CATEGORY
