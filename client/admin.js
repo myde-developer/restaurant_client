@@ -242,8 +242,9 @@ const loadOrders = async () => {
         <td>₦${Number(o.total_price).toLocaleString()}</td>
         <td>${new Date(o.created_at).toLocaleDateString()} <br>
             <small>${new Date(o.created_at).toLocaleTimeString()}</small></td>
+
         <td style="max-width:300px;word-wrap:break-word;">
-          ${JSON.parse(o.items || "[]").map(x => `${x.name} ×${x.quantity}`).join("<br>")}
+          ${(o.items || []).map(x => `${x.name} ×${x.quantity}`).join("<br>")}
         </td>
       </tr>
     `).join("") || "<tr><td colspan='7' style='text-align:center;padding:40px;color:#888'>No orders yet</td></tr>");
