@@ -74,7 +74,7 @@ const loadCategories = async () => {
       `;
     }
 
-    // Update Categories table
+    // Update categories table
     safeSetHTML("#catTable tbody", data.map(c => `
       <tr>
         <td>${c.name}</td>
@@ -85,10 +85,10 @@ const loadCategories = async () => {
                   style="background:#d32f2f;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;">Delete</button>
         </td>
       </tr>
-    `).join("") || "<tr><td colspan='2' style='text-align:center;padding:30px;color:#888'>No categories yet</td></tr>");
+    `).join("") || "<tr><td colspan='2'>No categories yet</td></tr>");
 
   } catch (err) {
-    console.error("Failed to load categories:", err);
+    console.error(err);
   }
 };
 
@@ -109,7 +109,7 @@ window.addCategory = async () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${adminToken}`   // THIS LINE WAS MISSING OR WRONG
+        "Authorization": `Bearer ${adminToken}`   
       },
       body: JSON.stringify({ name })
     });
@@ -119,9 +119,9 @@ window.addCategory = async () => {
     if (response.ok) {
       nameInput.value = "";
       alert(`"${name}" added successfully!`);
-      loadCategories();  // This updates dropdown in Menu tab instantly
+      loadCategories();  
+setTimeout(loadCategories, 300); 
     } else {
-      // This shows the EXACT error from backend
       alert("Failed: " + (result.error || result.message || "Unknown error"));
     }
   } catch (err) {
@@ -148,7 +148,7 @@ window.deleteCategory = async (id) => {
   }
 };
 
-// ADD MENU ITEM — IMAGE REQUIRED
+// ADD MENU ITEM
 window.addMenuItem = async () => {
   const category_id = document.getElementById("newCategoryId").value;
   const name = document.getElementById("newName").value.trim();
