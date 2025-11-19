@@ -76,20 +76,43 @@ const loadCategories = async () => {
 
 // ADD CATEGORY
 window.addCategory = async () => {
-  const name = document.getElementById("newCatName").value.trim();
-  if (!name) return alert("Enter name");
-  const res = await fetch(`${BASE_URL}/api/category`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` },
-    body: JSON.stringify({ name })
-  });
-  if (res.ok) {
-    document.getElementById("newCatName").value = "";
-    alert(`"${name}" added!`);
-    loadCategories();
-  } else alert("Failed");
-};
+  const nameInput = document.getElementById("newCatName");
+  const name = nameInput?.value.trim();
+  if (!name) return alert("Please enter a category name");
 
+  // Show loading
+  const btn = document.querySelector("#categories .add-form button");
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Adding...";
+
+  try {
+    const response = await fetch(`${BASE_URL}/api/category`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${adminToken}`   // THIS LINE WAS MISSING OR WRONG
+      },
+      body: JSON.stringify({ name })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      nameInput.value = "";
+      alert(`"${name}" added successfully!`);
+      loadCategories();  // This updates dropdown in Menu tab instantly
+    } else {
+      // This shows the EXACT error from backend
+      alert("Failed: " + (result.error || result.message || "Unknown error"));
+    }
+  } catch (err) {
+    alert("No internet or server is down. Try again in 30 seconds.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+};
 // EDIT & DELETE CATEGORY
 window.editCategory = async (id, old) => {
   const name = prompt("New name:", old);
