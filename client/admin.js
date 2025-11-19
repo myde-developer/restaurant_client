@@ -1,4 +1,4 @@
-const BASE_URL = "";  
+const BASE_URL = "https://restaurant-menu-1-60u0.onrender.com";  
 
 let cart = [];
 const adminToken = localStorage.getItem("asaToken");
