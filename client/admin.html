@@ -10,6 +10,7 @@
 </head>
 <body class="admin-body">
 
+  <!-- LOGIN BOX !-->
   <div id="loginBox" class="login-box">
     <h2>Admin Login</h2>
     <input type="text" id="username" placeholder="Username" value="admin" />
@@ -18,11 +19,13 @@
     <p id="loginMsg"></p>
   </div>
 
+  <!-- DASHBOARD -->
   <div id="dashboard" class="dashboard" style="display:none;">
     <div class="dash-header">
-      <h1> Our Heritage Kitchen – Admin</h1>
+      <h1>Our Heritage Kitchen – Admin</h1>
       <button class="logout" onclick="logout()">Logout</button>
     </div>
+
     <div class="dash-nav">
       <button class="active" onclick="openTab('menu')">Menu</button>
       <button onclick="openTab('categories')">Categories</button>
@@ -31,21 +34,22 @@
     </div>
 
     <div class="container">
+
       <!-- MENU TAB -->
       <div id="menu" class="tab active">
         <h2>Menu Items</h2>
         <div class="add-form">
           <h3>Add New Item</h3>
-          <select id="newCategoryId"></select>
-          <input type="text" id="newName" placeholder="Item Name" required>
-          <input type="number" id="newPrice" placeholder="Price (₦)" required>
-          <input type="text" id="newDesc" placeholder="Description (optional)">
-          <input type="text" id="newImage" placeholder="Image URL (REQUIRED)" required>
-          <select id="newAvailable">
+          <select id="newCategoryId" class="styled-select"></select>
+          <input type="text" id="newName" placeholder="Item Name" class="styled-input" required>
+          <input type="number" id="newPrice" placeholder="Price (₦)" class="styled-input" required>
+          <input type="text" id="newDesc" placeholder="Description (optional)" class="styled-input">
+          <input type="text" id="newImage" placeholder="Image URL (REQUIRED)" class="styled-input" required>
+          <select id="newAvailable" class="styled-select">
             <option value="true">Available</option>
             <option value="false">Not Available</option>
           </select>
-          <button onclick="addMenuItem()">Add Item</button>
+          <button onclick="addMenuItem()" class="action-btn add">Add Item</button>
         </div>
         <table id="menuTable">
           <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Available</th><th>Actions</th></tr></thead>
@@ -57,9 +61,9 @@
       <div id="categories" class="tab">
         <h2>Categories</h2>
         <div class="add-form">
-          <h3>Add Category</h3>
-          <input type="text" id="newCatName" placeholder="Category Name">
-          <button onclick="addCategory()">Add</button>
+          <h3>Add New Category</h3>
+          <input type="text" id="newCatName" placeholder="Category Name" class="styled-input">
+          <button onclick="addCategory()" class="action-btn add">Add Category</button>
         </div>
         <table id="catTable">
           <thead><tr><th>Name</th><th>Actions</th></tr></thead>
@@ -68,8 +72,21 @@
       </div>
 
       <!-- FEEDBACK & ORDERS -->
-      <div id="feedback" class="tab"><h2>Customer Reviews</h2><table id="feedbackTable"><thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead><tbody></tbody></table></div>
-      <div id="orders" class="tab"><h2>Orders</h2><table id="ordersTable"><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead><tbody></tbody></table></div>
+      <div id="feedback" class="tab">
+        <h2>Customer Reviews</h2>
+        <table id="feedbackTable">
+          <thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="orders" class="tab">
+        <h2>Customer Orders</h2>
+        <table id="ordersTable">
+          <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 

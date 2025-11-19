@@ -51,6 +51,47 @@ body { font-family:'Poppins',sans-serif; background:#fff8f0; color:#333; }
 .admin-stars i.far {
   color: #ddd;
 }
+.styled-input, .styled-select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.styled-select {
+  height: 48px;
+}
+
+.action-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: 0.3s;
+}
+
+.action-btn.add {
+  background: #006400;
+  color: white;
+}
+
+.action-btn.add:hover {
+  background: #004d00;
+}
+
+.action-btn.edit {
+  background: #ffbf00;
+  color: #333;
+}
+
+.action-btn.delete {
+  background: #d32f2f;
+  color: white;
+}
 
 .dashboard { display:none; margin-top:20px; }
 .dash-header { background:#006400; color:white; padding:20px; text-align:center; font-size:1.8rem; position:relative; }
