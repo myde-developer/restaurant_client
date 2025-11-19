@@ -104,15 +104,17 @@ window.addCategory = async () => {
       body: JSON.stringify({ name })
     });
 
+    const data = await res.json();
+
     if (res.ok) {
       document.getElementById("newCatName").value = "";
-      alert(`"${name}" added!`);
+      alert(`"${name}" added successfully!`);
       loadCategories();
     } else {
-      alert("Failed to add category");
+      alert("ERROR: " + (data.error || "Unknown error"));
     }
   } catch (err) {
-      alert("Server sleeping — wait 30-50s and try again");
+    alert("Network error — check internet or server");
   }
 };
 
