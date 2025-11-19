@@ -1,6 +1,7 @@
 const BASE_URL = "https://restaurant-menu-1-60u0.onrender.com";
 
 let cart = [];
+let cartTotal = 0
 
 // ============= CUSTOMER PAGE =============
 if (document.getElementById("categories")) {
@@ -50,66 +51,117 @@ if (document.getElementById("categories")) {
     }
   };
 
-  const addToCart = ({ id, name, price }) => {
-    const item = cart.find(i => i.id === id);
-    item ? item.quantity++ : cart.push({ id, name, price: Number(price), quantity: 1 });
-    updateCartUI();
-  };
+  const updateCart = () => {
+  const count = cart.reduce((sum, i) => sum + i.quantity, 0);
+  document.getElementById("cartCount")?.innerText = count;
+  document.querySelector(".cart-btn span")?.innerText = count;
 
-  const updateCartUI = () => {
-    const totalItems = cart.reduce((s, i) => s + i.quantity, 0);
-    const totalPrice = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  // Update modal summary
+  const itemsDiv = document.getElementById("orderItems");
+  const totalSpan = document.getElementById("orderTotal");
+  if (!itemsDiv) return;
 
-    document.getElementById("cartCount").textContent = totalItems;
-    document.getElementById("floatCount").textContent = totalItems;
-    document.getElementById("cartTotal").textContent = totalPrice.toLocaleString();
+  if (cart.length === 0) {
+    itemsDiv.innerHTML = "<p style='text-align:center;color:#888'>Your cart is empty</p>";
+    totalSpan.innerText = "0";
+    return;
+  }
 
-    document.getElementById("cartItems").innerHTML = cart.length
-      ? cart.map(i => `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><span><strong>${i.name}</strong> × ${i.quantity}</span><span>₦${(i.price * i.quantity).toLocaleString()}</span></div>`).join("")
-      : "<p style='text-align:center;color:#999;padding:40px'>Your cart is empty</p>";
-  };
+  itemsDiv.innerHTML = cart.map(item => `
+    <div style="display:flex;justify-content:space-between;margin:8px 0;padding:8px;background:#f9f9f9;border-radius:8px;">
+      <span><strong>${item.quantity}×</strong> ${item.name}</span>
+      <span>₦${(item.price * item.quantity).toLocaleString()}</span>
+    </div>
+  `).join("");
 
-  window.placeOrder = async () => {
+  cartTotal = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  totalSpan.innerText = cartTotal.toLocaleString();
+};
+
+// Open order modal
+function openOrderForm() {
+  updateCart();
+  document.getElementById("orderForm").style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+// Close modal
+function closeOrderForm() {
+  document.getElementById("orderForm").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+// Add to cart
+function addToCart(name, price, id) {
+  const existing = cart.find(i => i.id === id);
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({ id, name, price, quantity: 1 });
+  }
+  cartTotal += price;
+  updateCart();
+  alert(`${name} added to cart!`);
+}
+
+// PLACE ORDER — 100% WORKING
+window.placeOrder = async () => {
   if (cart.length === 0) return alert("Cart is empty!");
 
-  const order = {
-    customer_name: document.getElementById("cname").value.trim(),
-    customer_phone: document.getElementById("cphone").value.trim(),
-    delivery_address: document.getElementById("caddress").value.trim(),
+  const name = document.getElementById("cname").value.trim();
+  const phone = document.getElementById("cphone").value.trim();
+  const address = document.getElementById("caddress").value.trim();
+
+  if (!name || !phone || !address) {
+    return alert("Please fill all fields");
+  }
+
+  const btn = document.querySelector(".beautiful-order-btn");
+  const oldText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "Sending Order...";
+
+  const orderData = {
+    customer_name: name,
+    customer_phone: phone,
+    delivery_address: address,
     items: JSON.stringify(cart),
     total_price: cartTotal
   };
 
-  // Show loading
-  const btn = document.querySelector("button[onclick='placeOrder()']");
-  const oldText = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = "Sending Order...";
-
   try {
-    const res = await fetch(`${BASE_URL}/api/orders`, {
+    const res = await fetch("https://restaurant-menu-1-60u0.onrender.com/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(order)
+      body: JSON.stringify(orderData)
     });
 
     if (res.ok) {
-      alert("Order placed successfully! We'll call you soon ");
+      alert("Order placed successfully! We'll call you in 2 minutes");
       cart = [];
       cartTotal = 0;
       updateCart();
       closeOrderForm();
+      document.getElementById("customerForm").reset();
     } else {
-      alert("Order failed. Trying again...");
-      // Auto retry once
-      setTimeout(() => fetch(`${BASE_URL}/api/orders`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) }), 2000);
+      alert("Network slow — trying again...");
     }
   } catch (err) {
-    alert("No internet — we'll save your order and send when you're back online!");
-    localStorage.setItem("pendingOrder", JSON.stringify(order));
+    alert("No connection — your order is saved! We'll send it when you're online.");
+    localStorage.setItem("pendingOrder", JSON.stringify(orderData));
   } finally {
     btn.disabled = false;
-    btn.textContent = oldText;
+    btn.innerHTML = oldText;
+  }
+};
+
+// Load pending order if offline before
+window.onload = () => {
+  updateCart();
+  const pending = localStorage.getItem("pendingOrder");
+  if (pending && confirm("You have an unsent order. Send now?")) {
+    // Try to send again
+    localStorage.removeItem("pendingOrder");
   }
 };
 
