@@ -44,7 +44,6 @@ const safeSetHTML = (sel, html) => document.querySelector(sel)?.innerHTML = html
 const loadCategories = async () => {
   try {
     const res = await fetch(`${BASE_URL}/api/category`);
-    if (!res.ok) return;
     const { data } = await res.json();
     categories = data || [];
 
@@ -54,25 +53,28 @@ const loadCategories = async () => {
         data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
     }
 
-    safeSetHTML("#catTable tbody", data.length > 0 ? data.map(c => `
+    safeSetHTML("#catTable tbody", data.map(c => `
       <tr>
         <td>${c.name}</td>
         <td>
-          <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" 
+          <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g,"\\'")}')" 
                   style="background:#ffbf00;padding:8px 16px;border:none;border-radius:6px;margin:2px;cursor:pointer;font-weight:600;">Edit</button>
           <button onclick="deleteCategory(${c.id})" 
                   style="background:#d32f2f;color:white;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Delete</button>
         </td>
       </tr>
-    `).join("") : "<tr><td colspan='2' style='text-align:center;padding:30px;color:#888'>No categories yet</td></tr>");
+    `).join("") || "<tr><td colspan='2' style='text-align:center;padding:30px;color:#888'>No categories yet</td></tr>");
 
-  } catch (err) { }
+  } catch (err) {
+    console.error("Load categories error:", err);
+  }
 };
 
 window.addCategory = async () => {
   const nameInput = document.getElementById("newCatName");
   const name = nameInput?.value.trim();
   if (!name) return alert("Enter category name");
+
   if (categories.some(c => c.name.toLowerCase() === name.toLowerCase())) {
     return alert(`"${name}" already exists!`);
   }
@@ -92,18 +94,17 @@ window.addCategory = async () => {
       body: JSON.stringify({ name })
     });
 
-    const result = await res.json();
-
     if (res.ok) {
       nameInput.value = "";
       alert(`"${name}" added successfully!`);
       await loadCategories();
-      setTimeout(loadCategories, 500);
+      setTimeout(loadCategories, 400);
     } else {
-      alert("Failed: " + (result.error || "Try again"));
+      const err = await res.json();
+      alert("Failed: " + (err.error || "Try again"));
     }
   } catch (err) {
-    alert("No internet or server sleeping");
+    alert("Server sleeping — wait 30s");
   } finally {
     btn.disabled = false;
     btn.textContent = oldText;
@@ -113,26 +114,16 @@ window.addCategory = async () => {
 window.editCategory = async (id, old) => {
   const name = prompt("New name:", old);
   if (name && name !== old) {
-    await fetch(`${BASE_URL}/api/category`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` },
-      body: JSON.stringify({ name })
-    });
-    await fetch(`${BASE_URL}/api/category/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${adminToken}` }
-    });
+    await fetch(`${BASE_URL}/api/category`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` }, body: JSON.stringify({ name }) });
+    await fetch(`${BASE_URL}/api/category/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${adminToken}` } });
     loadCategories();
     loadMenuItems();
   }
 };
 
 window.deleteCategory = async (id) => {
-  if (confirm("Delete category + all items?")) {
-    await fetch(`${BASE_URL}/api/category/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${adminToken}` }
-    });
+  if (confirm("Delete category and all its items?")) {
+    await fetch(`${BASE_URL}/api/category/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${adminToken}` } });
     loadCategories();
     loadMenuItems();
   }
