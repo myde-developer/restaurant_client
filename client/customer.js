@@ -110,7 +110,14 @@ window.placeOrder = async () => {
   btn.disabled = true;
   btn.innerHTML = "Sending Order...";
 
-  const order = { customer_name: name, customer_phone: phone, delivery_address: address, items: JSON.stringify(cart), total_price: cartTotal };
+  const order = {
+    customer_name: name,
+    customer_phone: phone,
+    delivery_address: address,
+    total_price: cartTotal,
+    items: cart,             
+    note: ""
+  };
 
   try {
     const res = await fetch(`${BASE_URL}/api/orders`, {
@@ -119,12 +126,22 @@ window.placeOrder = async () => {
       body: JSON.stringify(order)
     });
 
-    if (res.ok) {
-      alert("Order placed successfully! We'll call you soon");
-      cart = []; updateCart(); closeOrderForm();
-      document.getElementById("customerForm").reset();
-    } else alert("Order failed — trying again later");
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("SERVER ERROR:", data);
+      alert("Order failed: " + (data.message || "Please try again later"));
+      return;
+    }
+
+    alert("Order placed successfully!");
+    cart = []; 
+    updateCart(); 
+    closeOrderForm();
+    document.getElementById("customerForm").reset();
+
   } catch (err) {
+    console.error(err);
     alert("No internet — your order is saved!");
     localStorage.setItem("pendingOrder", JSON.stringify(order));
   } finally {
