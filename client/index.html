@@ -60,27 +60,43 @@
   </div>
 
   <!-- Cart & Order Modal -->
-  <div id="cartModal" class="modal">
-    <div class="modal-content">
-      <span class="close">×</span>
-      <h2>Your Cart (<span id="cartCount">0</span> items)</h2>
-      <div id="cartItems"></div>
-      <div class="cart-total">Total: ₦<span id="cartTotal">0</span></div>
+<div id="orderForm" class="order-modal">
+  <div class="order-modal-content">
+    <span class="close-btn" onclick="closeOrderForm()">×</span>
+    
+    <h2 style="color:#006400; text-align:center; font-family:'Playfair Display',serif;">
+      Complete Your Order
+    </h2>
+    <p style="text-align:center; color:#555; margin-bottom:20px;">
+      We'll call you to confirm in 2 minutes
+    </p>
 
-      <div id="checkoutForm" style="display:none;margin-top:20px;">
-        <h3>Delivery Details</h3>
-        <input type="text" id="orderName" placeholder="Full Name" required />
-        <input type="tel" id="orderPhone" placeholder="Phone Number" required />
-        <input type="text" id="orderAddress" placeholder="Delivery Address" required />
-        <textarea id="orderNote" placeholder="Note (optional)"></textarea>
-        <button onclick="placeOrder()" class="btn-green">Place Order</button>
+    <div class="order-summary">
+      <h3>Your Order (<span id="cartCount">0</span> items)</h3>
+      <div id="orderItems"></div>
+      <div class="total-price">
+        <strong>Total: ₦<span id="orderTotal">0</span></strong>
       </div>
+    </div>
 
-      <button id="checkoutBtn" class="btn-green" style="width:100%;margin-top:15px;">
-        Proceed to Checkout
+    <form id="customerForm" style="margin-top:20px;">
+      <input type="text" id="cname" placeholder="Full Name" required>
+      <input type="tel" id="cphone" placeholder="Phone Number (e.g. 09012345678)" required>
+      <input type="text" id="caddress" placeholder="Delivery Address (Street, Area, Lagos)" required>
+      
+      <textarea id="cnote" placeholder="Extra note? (e.g. No pepper, Gate code: 1234)" rows="2"></textarea>
+
+      <button type="button" onclick="placeOrder()" class="beautiful-order-btn">
+        <span>Place Order Now</span>
       </button>
+    </form>
+
+    <div style="text-align:center; margin-top:20px; color:#006400; font-size:14px;">
+      <strong>Our Heritage Kitchen</strong><br>
+      Fresh • Authentic • Delivered Hot
     </div>
   </div>
+</div>
 
   <script src="customer.js"></script>
 </body>

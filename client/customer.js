@@ -70,28 +70,48 @@ if (document.getElementById("categories")) {
   };
 
   window.placeOrder = async () => {
-    const payload = {
-      customer_name: document.getElementById("orderName").value.trim(),
-      customer_phone: document.getElementById("orderPhone").value.trim(),
-      delivery_address: document.getElementById("orderAddress").value.trim(),
-      note: document.getElementById("orderNote").value.trim(),
-      total_price: cart.reduce((s, i) => s + i.price * i.quantity, 0),
-      items: JSON.stringify(cart)
-    };
+  if (cart.length === 0) return alert("Cart is empty!");
 
+  const order = {
+    customer_name: document.getElementById("cname").value.trim(),
+    customer_phone: document.getElementById("cphone").value.trim(),
+    delivery_address: document.getElementById("caddress").value.trim(),
+    items: JSON.stringify(cart),
+    total_price: cartTotal
+  };
+
+  // Show loading
+  const btn = document.querySelector("button[onclick='placeOrder()']");
+  const oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Sending Order...";
+
+  try {
     const res = await fetch(`${BASE_URL}/api/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(order)
     });
 
     if (res.ok) {
-      alert("Order placed successfully!");
+      alert("Order placed successfully! We'll call you soon ");
       cart = [];
-      updateCartUI();
-      document.getElementById("cartModal").style.display = "none";
+      cartTotal = 0;
+      updateCart();
+      closeOrderForm();
+    } else {
+      alert("Order failed. Trying again...");
+      // Auto retry once
+      setTimeout(() => fetch(`${BASE_URL}/api/orders`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) }), 2000);
     }
-  };
+  } catch (err) {
+    alert("No internet — we'll save your order and send when you're back online!");
+    localStorage.setItem("pendingOrder", JSON.stringify(order));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+};
 
   const loadReviews = async () => {
     const container = document.getElementById("reviews-container");
