@@ -224,18 +224,32 @@ const loadFeedback = async () => {
   `).join("") || "<tr><td colspan='4' style='text-align:center;padding:30px;color:#888'>No reviews yet</td></tr>");
 };
 const loadOrders = async () => {
-  const res = await fetch(`${BASE_URL}/api/orders`, { headers: { Authorization: `Bearer ${adminToken}` } });
-  const { data = [] } = await res.json();
-  safeSetHTML("#ordersTable tbody", data.length ? data.map(o => `
-    <tr>
-      <td>${o.id}</td>
-      <td>${o.customer_name}</td>
-      <td>${o.customer_phone}</td>
-      <td>${o.delivery_address || "-"}</td>
-      <td>₦${Number(o.total_price).toLocaleString()}</td>
-      <td>${new Date(o.created_at).toLocaleDateString()}</td>
-      <td>${JSON.parse(o.items || "[]").map(x => x.name + " ×" + x.quantity).join(", ")}</td>
-    </tr>`).join("") : "<tr><td colspan='7' style='text-align:center;color:#666'>No orders yet</td></tr>");
+  try {
+    const res = await fetch(`${BASE_URL}/api/orders`, {
+      headers: { Authorization: `Bearer ${adminToken}` }
+    });
+    const { data = [] } = await res.json();
+
+    // Sort newest first
+    data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    safeSetHTML("#ordersTable tbody", data.map(o => `
+      <tr>
+        <td>${o.id}</td>
+        <td>${o.customer_name}</td>
+        <td>${o.customer_phone}</td>
+        <td>${o.delivery_address || "-"}</td>
+        <td>₦${Number(o.total_price).toLocaleString()}</td>
+        <td>${new Date(o.created_at).toLocaleDateString()} <br>
+            <small>${new Date(o.created_at).toLocaleTimeString()}</small></td>
+        <td style="max-width:300px;word-wrap:break-word;">
+          ${JSON.parse(o.items || "[]").map(x => `${x.name} ×${x.quantity}`).join("<br>")}
+        </td>
+      </tr>
+    `).join("") || "<tr><td colspan='7' style='text-align:center;padding:40px;color:#888'>No orders yet</td></tr>");
+  } catch (err) {
+    console.error("Failed to load orders:", err);
+  }
 };
 
 if (document.getElementById("loginBox") && adminToken) {
