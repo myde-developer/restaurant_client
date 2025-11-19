@@ -61,49 +61,108 @@ const safeSetHTML = (selector, html) => {
 
 // ============= CATEGORIES =============
 const loadCategories = async () => {
-  const { data } = await (await fetch(`${BASE_URL}/api/category`)).json();
-  categories = data;
+  try {
+    const res = await fetch(`${BASE_URL}/api/category`);
+    const { data } = await res.json();
+    categories = data || [];
 
-  const sel = document.getElementById("newCategoryId");
-  if (sel) sel.innerHTML = data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+    // Update dropdown for menu items
+    const select = document.getElementById("newCategoryId");
+    if (select) {
+      select.innerHTML = `<option value="">Select Category</option>` +
+        data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+    }
 
-  safeSetHTML("#catTable tbody", data.map(c => `
-    <tr>
-      <td>${c.name}</td>
-      <td>
-        <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g,"\\'")}')" 
-                style="background:#ffbf00;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">Edit</button>
-        <button onclick="deleteCategory(${c.id})" 
-                style="background:#d32f2f;color:white;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">Delete</button>
-      </td>
-    </tr>`).join(""));
-};
+    // Update categories table
+    safeSetHTML("#catTable tbody", data.map(c => `
+      <tr>
+        <td>${c.name}</td>
+        <td>
+          <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" class="action-btn edit">Edit</button>
+          <button onclick="deleteCategory(${c.id})" class="action-btn delete">Delete</button>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="2" style="text-align:center;padding:30px;color:#888">No categories yet</td></tr>`);
 
-window.addCategory = async () => {
-  const name = document.getElementById("newCatName")?.value.trim();
-  if (!name) return alert("Enter category name");
-  await fetch(`${BASE_URL}/api/category`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` },
-    body: JSON.stringify({ name })
-  });
-  document.getElementById("newCatName").value = "";
-  loadCategories();
-};
-
-window.editCategory = async (id, oldName) => {
-  const name = prompt("New category name:", oldName);
-  if (name && name !== oldName) {
-    await fetch(`${BASE_URL}/api/category`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` }, body: JSON.stringify({ name }) });
-    await fetch(`${BASE_URL}/api/category/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${adminToken}` } });
-    loadCategories(); loadMenuItems();
+  } catch (err) {
+    safeSetHTML("#catTable tbody", "<tr><td colspan='2'>Server waking up…</td></tr>");
   }
 };
 
-window.deleteCategory = (id) => {
-  if (confirm("Delete this category and ALL its items?")) {
-    fetch(`${BASE_URL}/api/category/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${adminToken}` } })
-      .then(() => { loadCategories(); loadMenuItems(); });
+// ADD CATEGORY
+window.addCategory = async () => {
+  const name = document.getElementById("newCatName")?.value.trim();
+  if (!name) return alert("Enter category name");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/category`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({ name })
+    });
+
+    if (res.ok) {
+      document.getElementById("newCatName").value = "";
+      alert(`"${name}" added!`);
+      loadCategories();
+    } else {
+      alert("Failed to add category");
+    }
+  } catch (err) {
+      alert("Server sleeping — wait 30-50s and try again");
+  }
+};
+
+// EDIT CATEGORY (rename)
+window.editCategory = async (id, oldName) => {
+  const newName = prompt("New name:", oldName);
+  if (!newName || newName === oldName) return;
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/category`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${adminToken}`
+      },
+      body: JSON.stringify({ name: newName.trim() })
+    });
+
+    if (res.ok) {
+      await fetch(`${BASE_URL}/api/category/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${adminToken}` }
+      });
+      alert(`Renamed to "${newName}"`);
+      loadCategories();
+      loadMenuItems();
+    }
+  } catch (err) {
+    alert("Error editing category");
+  }
+};
+
+// DELETE CATEGORY
+window.deleteCategory = async (id) => {
+  const cat = categories.find(c => c.id === id);
+  if (!confirm(`Delete "${cat?.name || "this category"}" and ALL its items?`)) return;
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/category/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${adminToken}` }
+    });
+
+    if (res.ok) {
+      alert("Category deleted");
+      loadCategories();
+      loadMenuItems();
+    }
+  } catch (err) {
+    alert("Server sleeping — try again in 30-50s");
   }
 };
 
