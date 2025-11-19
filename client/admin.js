@@ -61,123 +61,64 @@ const safeSetHTML = (selector, html) => {
 
 // ============= CATEGORIES =============
 const loadCategories = async () => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/category`);
-    const { data } = await res.json();
-    categories = data || [];
-
-    // Update dropdown for menu items
-    const select = document.getElementById("newCategoryId");
-    if (select) {
-      select.innerHTML = `<option value="">Select Category</option>` +
-        data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
-    }
-
-    // Update categories table
-    safeSetHTML("#catTable tbody", data.map(c => `
-      <tr>
-        <td>${c.name}</td>
-        <td>
-          <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" class="action-btn edit">Edit</button>
-          <button onclick="deleteCategory(${c.id})" class="action-btn delete">Delete</button>
-        </td>
-      </tr>
-    `).join("") || `<tr><td colspan="2" style="text-align:center;padding:30px;color:#888">No categories yet</td></tr>`);
-
-  } catch (err) {
-    safeSetHTML("#catTable tbody", "<tr><td colspan='2'>Server waking up…</td></tr>");
-  }
+  const { data } = await (await fetch(`${BASE_URL}/api/category`)).json();
+  categories = data || [];
+  const sel = document.getElementById("newCategoryId");
+  if (sel) sel.innerHTML = `<option value="">Select Category</option>` + data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+  safeSetHTML("#catTable tbody", data.map(c => `
+    <tr><td>${c.name}</td>
+    <td>
+      <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g,"\\'")}')">Edit</button>
+      <button onclick="deleteCategory(${c.id})">Delete</button>
+    </td></tr>
+  `).join("") || "<tr><td colspan='2'>No categories</td></tr>");
 };
 
 // ADD CATEGORY
 window.addCategory = async () => {
-  const name = document.getElementById("newCatName")?.value.trim();
-  if (!name) return alert("Enter category name");
+  const name = document.getElementById("newCatName").value.trim();
+  if (!name) return alert("Enter name");
+  const res = await fetch(`${BASE_URL}/api/category`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` },
+    body: JSON.stringify({ name })
+  });
+  if (res.ok) {
+    document.getElementById("newCatName").value = "";
+    alert(`"${name}" added!`);
+    loadCategories();
+  } else alert("Failed");
+};
 
-  try {
-    const res = await fetch(`${BASE_URL}/api/category`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${adminToken}`
-      },
-      body: JSON.stringify({ name })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      document.getElementById("newCatName").value = "";
-      alert(`"${name}" added successfully!`);
-      loadCategories();
-    } else {
-      alert("ERROR: " + (data.error || "Unknown error"));
-    }
-  } catch (err) {
-    alert("Network error — check internet or server");
+// EDIT & DELETE CATEGORY
+window.editCategory = async (id, old) => {
+  const name = prompt("New name:", old);
+  if (name && name !== old) {
+    await fetch(`${BASE_URL}/api/category`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken}` }, body: JSON.stringify({ name }) });
+    await fetch(`${BASE_URL}/api/category/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${adminToken}` } });
+    loadCategories(); loadMenuItems();
   }
 };
 
-// EDIT CATEGORY (rename)
-window.editCategory = async (id, oldName) => {
-  const newName = prompt("New name:", oldName);
-  if (!newName || newName === oldName) return;
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/category`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${adminToken}`
-      },
-      body: JSON.stringify({ name: newName.trim() })
-    });
-
-    if (res.ok) {
-      await fetch(`${BASE_URL}/api/category/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${adminToken}` }
-      });
-      alert(`Renamed to "${newName}"`);
-      loadCategories();
-      loadMenuItems();
-    }
-  } catch (err) {
-    alert("Error editing category");
-  }
-};
-
-// DELETE CATEGORY
 window.deleteCategory = async (id) => {
-  const cat = categories.find(c => c.id === id);
-  if (!confirm(`Delete "${cat?.name || "this category"}" and ALL its items?`)) return;
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/category/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${adminToken}` }
-    });
-
-    if (res.ok) {
-      alert("Category deleted");
-      loadCategories();
-      loadMenuItems();
-    }
-  } catch (err) {
-    alert("Server sleeping — try again in 30-50s");
+  if (confirm("Delete category + all items?")) {
+    await fetch(`${BASE_URL}/api/category/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${adminToken}` } });
+    loadCategories(); loadMenuItems();
   }
 };
 
-// ============= MENU ITEMS =============
+// ADD MENU ITEM — IMAGE REQUIRED
 window.addMenuItem = async () => {
-  const category_id = document.getElementById("newCategoryId")?.value;
-  const name = document.getElementById("newName")?.value.trim();
-  const price = document.getElementById("newPrice")?.value;
-  const description = document.getElementById("newDesc")?.value.trim() || null;
-  const image_url = document.getElementById("newImage")?.value.trim() || null;
-  const is_available = document.getElementById("newAvailable")?.value === "true";
+  const category_id = document.getElementById("newCategoryId").value;
+  const name = document.getElementById("newName").value.trim();
+  const price = document.getElementById("newPrice").value;
+  const description = document.getElementById("newDesc").value.trim() || null;
+  const image_url = document.getElementById("newImage").value.trim();
+  const is_available = document.getElementById("newAvailable").value === "true";
 
-  if (!category_id || !name || !price) return alert("Fill required fields");
+  if (!category_id || !name || !price || !image_url) {
+    return alert("All fields required — especially Image URL!");
+  }
 
   await fetch(`${BASE_URL}/api/menu`, {
     method: "POST",
@@ -185,7 +126,8 @@ window.addMenuItem = async () => {
     body: JSON.stringify({ category_id, name, description, price, image_url, is_available })
   });
 
-  ["newName","newPrice","newDesc","newImage"].forEach(id => document.getElementById(id).value = "");
+  ["newName","newPrice","newDesc","newImage"].forEach(i => document.getElementById(i).value = "");
+  document.getElementById("newCategoryId").selectedIndex = 0;
   loadMenuItems();
 };
 

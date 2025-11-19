@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin • Our Heritage Kitchen</title>
+  <title>Admin • Àṣà Heritage Kitchen</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="main.css" />
@@ -15,36 +15,37 @@
     <input type="text" id="username" placeholder="Username" value="admin" />
     <input type="password" id="password" placeholder="Password" value="asaheritage2025" />
     <button onclick="login()">Login</button>
-    <p id="loginMsg" style="margin-top:15px;font-weight:bold;"></p>
+    <p id="loginMsg"></p>
   </div>
 
   <div id="dashboard" class="dashboard" style="display:none;">
     <div class="dash-header">
-      <h1>Our Heritage Kitchen – Admin Panel</h1>
+      <h1> Our Heritage Kitchen – Admin</h1>
       <button class="logout" onclick="logout()">Logout</button>
     </div>
     <div class="dash-nav">
-      <button class="active" onclick="openTab('menu')">Menu Items</button>
+      <button class="active" onclick="openTab('menu')">Menu</button>
       <button onclick="openTab('categories')">Categories</button>
-      <button onclick="openTab('feedback')">Feedback</button>
+      <button onclick="openTab('feedback')">Reviews</button>
       <button onclick="openTab('orders')">Orders</button>
     </div>
 
     <div class="container">
+      <!-- MENU TAB -->
       <div id="menu" class="tab active">
         <h2>Menu Items</h2>
-        <div style="background:#f9f9f9;padding:20px;border-radius:10px;margin-bottom:30px;">
-          <h3>Add New Menu Item</h3>
-          <select id="newCategoryId" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;"></select>
-          <input type="text" id="newName" placeholder="Item Name" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
-          <input type="number" id="newPrice" placeholder="Price (₦)" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
-          <input type="text" id="newDesc" placeholder="Description (optional)" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
-          <input type="text" id="newImage" placeholder="Image URL (optional)" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
-          <select id="newAvailable" style="width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
+        <div class="add-form">
+          <h3>Add New Item</h3>
+          <select id="newCategoryId"></select>
+          <input type="text" id="newName" placeholder="Item Name" required>
+          <input type="number" id="newPrice" placeholder="Price (₦)" required>
+          <input type="text" id="newDesc" placeholder="Description (optional)">
+          <input type="text" id="newImage" placeholder="Image URL (REQUIRED)" required>
+          <select id="newAvailable">
             <option value="true">Available</option>
             <option value="false">Not Available</option>
           </select>
-          <button onclick="addMenuItem()" style="background:#006400;color:white;padding:12px 30px;border:none;border-radius:8px;margin-top:10px;cursor:pointer;">Add Item</button>
+          <button onclick="addMenuItem()">Add Item</button>
         </div>
         <table id="menuTable">
           <thead><tr><th>Name</th><th>Price</th><th>Category</th><th>Available</th><th>Actions</th></tr></thead>
@@ -52,12 +53,13 @@
         </table>
       </div>
 
+      <!-- CATEGORIES TAB -->
       <div id="categories" class="tab">
         <h2>Categories</h2>
-        <div style="background:#f9f9f9;padding:20px;border-radius:10px;margin-bottom:30px;">
-          <h3>Add New Category</h3>
-          <input type="text" id="newCatName" placeholder="Category Name" style="width:70%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;">
-          <button onclick="addCategory()" style="background:#006400;color:white;padding:12px 30px;border:none;border-radius:8px;cursor:pointer;">Add Category</button>
+        <div class="add-form">
+          <h3>Add Category</h3>
+          <input type="text" id="newCatName" placeholder="Category Name">
+          <button onclick="addCategory()">Add</button>
         </div>
         <table id="catTable">
           <thead><tr><th>Name</th><th>Actions</th></tr></thead>
@@ -65,8 +67,9 @@
         </table>
       </div>
 
+      <!-- FEEDBACK & ORDERS -->
       <div id="feedback" class="tab"><h2>Customer Reviews</h2><table id="feedbackTable"><thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Date</th></tr></thead><tbody></tbody></table></div>
-      <div id="orders" class="tab"><h2>Customer Orders</h2><table id="ordersTable"><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead><tbody></tbody></table></div>
+      <div id="orders" class="tab"><h2>Orders</h2><table id="ordersTable"><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Address</th><th>Total</th><th>Date</th><th>Items</th></tr></thead><tbody></tbody></table></div>
     </div>
   </div>
 
