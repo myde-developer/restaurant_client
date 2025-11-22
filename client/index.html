@@ -1,93 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Our Heritage Kitchen - Authentic Nigerian Cuisine</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="main.css" />
-</head>
-<body>
-  <header class="header">
-    <div class="container">
-      <h1>Our Heritage Kitchen</h1>
-      <p class="tagline">Taste the Soul of Nigeria</p>
-    </div>
-  </header>
-
-  <nav class="categories" id="categories"></nav>
-  <main class="container menu-container" id="menu"></main>
-
-  <section class="reviews-section">
-    <div class="container">
-      <h2 class="section-title">Customer Reviews</h2>
-      <div id="reviews-container" class="reviews-grid"></div>
-
-      <div class="review-form">
-        <h3>Leave a Review</h3>
-        <form id="feedbackForm">
-          <input type="text" name="customer_name" placeholder="Your Name" required />
-          <div class="rating">
-            <span>Rate us:</span>
-            <div class="stars">
-              <i class="far fa-star" data-value="1"></i>
-              <i class="far fa-star" data-value="2"></i>
-              <i class="far fa-star" data-value="3"></i>
-              <i class="far fa-star" data-value="4"></i>
-              <i class="far fa-star" data-value="5"></i>
-            </div>
-          </div>
-          <textarea name="comment" placeholder="Your comment..." rows="4" required></textarea>
-          <button type="submit">Submit Review</button>
-        </form>
-        <p id="formMessage"></p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>Our Heritage Kitchen - Authentic Nigerian Cuisine</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="main.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <h1>Our Heritage Kitchen</h1>
+        <p class="tagline">Taste the Soul of Nigeria</p>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <footer class="footer">
-    <div class="container">
-      <p>Our Heritage Kitchen • Plot 24, Adeola Odeku, Victoria Island, Lagos</p>
-      <p>+234 813 957 4794 • Open Daily 11:00 AM – 11:00 PM</p>
-    </div>
-  </footer>
+    <nav
+      class="categories"
+      id="categories"></nav>
+    <main
+      class="container menu-container"
+      id="menu"></main>
 
-  <!-- Floating Cart Button -->
-  <div class="cart-float" onclick="openOrderForm()">
-    <i class="fas fa-shopping-cart"></i>
-    <span class="cart-badge" id="floatCount">0</span>
-  </div>
+    <section class="reviews-section">
+      <div class="container">
+        <h2 class="section-title">Customer Reviews</h2>
+        <div
+          id="reviews-container"
+          class="reviews-grid"></div>
 
-  <!-- Order Modal -->
-  <div id="orderForm" class="order-modal">
-    <div class="order-modal-content">
-      <span class="close-btn" onclick="closeOrderForm()">×</span>
-      <h2 style="color:#006400;text-align:center;font-family:'Playfair Display',serif;">Complete Your Order</h2>
-      <p style="text-align:center;color:#555;margin-bottom:20px;">We'll call you to confirm in 2 minutes</p>
-
-      <div class="order-summary">
-        <h3>Your Order (<span id="cartCount">0</span> items)</h3>
-        <div id="orderItems"></div>
-        <div class="total-price">
-          <strong>Total: ₦<span id="orderTotal">0</span></strong>
+        <div class="review-form">
+          <h3>Leave a Review</h3>
+          <form id="feedbackForm">
+            <input
+              type="text"
+              name="customer_name"
+              placeholder="Your Name"
+              required />
+            <div class="rating">
+              <span>Rate us:</span>
+              <div class="stars">
+                <i
+                  class="far fa-star"
+                  data-value="1"></i>
+                <i
+                  class="far fa-star"
+                  data-value="2"></i>
+                <i
+                  class="far fa-star"
+                  data-value="3"></i>
+                <i
+                  class="far fa-star"
+                  data-value="4"></i>
+                <i
+                  class="far fa-star"
+                  data-value="5"></i>
+              </div>
+            </div>
+            <textarea
+              name="comment"
+              placeholder="Your comment..."
+              rows="4"
+              required></textarea>
+            <button type="submit">Submit Review</button>
+          </form>
+          <p id="formMessage"></p>
         </div>
       </div>
+    </section>
 
-      <form id="customerForm">
-        <input type="text" id="cname" placeholder="Full Name" required>
-        <input type="tel" id="cphone" placeholder="Phone Number (e.g. 09012345678)" required>
-        <input type="text" id="caddress" placeholder="Delivery Address" required>
-        <textarea id="cnote" placeholder="Extra note? (e.g. No pepper)" rows="2"></textarea>
-        <button type="button" onclick="placeOrder()" class="beautiful-order-btn">Place Order Now</button>
-      </form>
+    <footer class="footer">
+      <div class="container">
+        <p>
+          Our Heritage Kitchen • Plot 24, Adeola Odeku, Victoria Island, Lagos
+        </p>
+        <p>+234 813 957 4794 • Open Daily 11:00 AM – 11:00 PM</p>
+      </div>
+    </footer>
 
-      <div style="text-align:center;margin-top:20px;color:#006400;font-size:14px;">
-        <strong>Our Heritage Kitchen</strong><br>Fresh • Authentic • Delivered Hot
+    <div
+      class="cart-float"
+      onclick="openOrderForm()">
+      <i class="fas fa-shopping-cart"></i>
+      <span
+        class="cart-badge"
+        id="floatCount"
+        >0</span
+      >
+    </div>
+
+    <div
+      id="orderForm"
+      class="order-modal">
+      <div class="order-modal-content">
+        <span
+          class="close-btn"
+          onclick="closeOrderForm()"
+          >×</span
+        >
+        <h2
+          style="
+            color: #006400;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+          ">
+          Complete Your Order
+        </h2>
+        <p style="text-align: center; color: #555; margin-bottom: 20px">
+          We'll call you to confirm in 2 minutes
+        </p>
+
+        <div class="order-summary">
+          <h3>Your Order (<span id="cartCount">0</span> items)</h3>
+          <div id="orderItems"></div>
+          <div class="total-price">
+            <strong>Total: ₦<span id="orderTotal">0</span></strong>
+          </div>
+        </div>
+
+        <form id="customerForm">
+          <input
+            type="text"
+            id="cname"
+            placeholder="Full Name"
+            required />
+          <input
+            type="tel"
+            id="cphone"
+            placeholder="Phone Number (e.g. 09012345678)"
+            required />
+          <input
+            type="text"
+            id="caddress"
+            placeholder="Delivery Address"
+            required />
+          <textarea
+            id="cnote"
+            placeholder="Extra note? (e.g. No pepper)"
+            rows="2"></textarea>
+          <button
+            type="button"
+            onclick="placeOrder()"
+            class="beautiful-order-btn">
+            Place Order Now
+          </button>
+        </form>
+
+        <div
+          style="
+            text-align: center;
+            margin-top: 20px;
+            color: #006400;
+            font-size: 14px;
+          ">
+          <strong>Our Heritage Kitchen</strong><br />Fresh • Authentic •
+          Delivered Hot
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="customer.js"></script>
-</body>
+    <script src="customer.js"></script>
+  </body>
 </html>
