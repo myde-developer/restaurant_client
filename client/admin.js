@@ -315,13 +315,26 @@ const loadFeedback = async () => {
   }
 };
 
-// ============= ORDERS =============
+
 const loadOrders = async () => {
   try {
+    console.log('Loading orders...'); 
+    
     const res = await fetch(`${BASE_URL}/api/orders`, {
-      headers: { Authorization: `Bearer ${adminToken}` },
+      headers: { 
+        'Authorization': `Bearer ${adminToken}`,
+        'Content-Type': 'application/json'
+      },
     });
-    const { data = [] } = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const result = await res.json();
+    const data = result.data || [];
+    
+    console.log('Orders loaded:', data); 
 
     data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
@@ -330,7 +343,7 @@ const loadOrders = async () => {
       data.length
         ? data
             .map((o) => {
-              const items = JSON.parse(o.items || '[]');
+              const items = o.items || [];
               const note = o.note
                 ? `<br><br><strong style="color:#d32f2f;font-size:1.1em;">Note: ${o.note}</strong>`
                 : '';
@@ -359,13 +372,15 @@ const loadOrders = async () => {
         : "<tr><td colspan='7' style='text-align:center;padding:80px;color:#888;font-size:1.1rem;'>No orders yet</td></tr>"
     );
   } catch (err) {
+    console.error('Load orders error:', err);
     safeSetHTML(
       '#ordersTable tbody',
-      "<tr><td colspan='7' style='text-align:center;padding:80px;color:#d32f2f;'>Failed to load orders</td></tr>"
+      `<tr><td colspan='7' style='text-align:center;padding:80px;color:#d32f2f;'>
+        Failed to load orders: ${err.message}
+      </td></tr>`
     );
   }
 };
-
 // ============= LOAD ON LOGIN =============
 if (document.getElementById('loginBox') && adminToken) {
   document.getElementById('loginBox').style.display = 'none';

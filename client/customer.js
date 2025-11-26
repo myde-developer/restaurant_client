@@ -281,8 +281,18 @@ async function loadFoodDetails(id) {
 
 async function loadFoodReviews(foodId) {
   try {
+    console.log('Loading reviews for food ID:', foodId); 
+    
     const res = await fetch(`${BASE_URL}/api/feedbacks?menu_item_id=${foodId}`);
-    const { data = [] } = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
+    const result = await res.json();
+    const data = result.data || [];
+    
+    console.log('Reviews loaded:', data); 
     
     const reviewsContainer = document.getElementById('foodReviews');
     if (data.length > 0) {
@@ -308,7 +318,7 @@ async function loadFoodReviews(foodId) {
     console.error('Error loading reviews:', err);
     document.getElementById('foodReviews').innerHTML = `
       <div style="text-align:center;padding:40px;color:#d32f2f;grid-column:1/-1;">
-        <p>Failed to load reviews</p>
+        <p>Failed to load reviews: ${err.message}</p>
       </div>
     `;
   }
@@ -320,9 +330,18 @@ async function submitFoodReview() {
   const rating = document.querySelectorAll('#rateStars i.fas').length;
   const comment = document.getElementById('foodComment').value.trim();
   
-  if (!rating) return alert('Please select a rating');
-  if (!comment) return alert('Please enter a comment');
-  if (!foodId) return alert('Food ID missing');
+  if (!rating) {
+    alert('Please select a rating');
+    return;
+  }
+  if (!comment) {
+    alert('Please enter a comment');
+    return;
+  }
+  if (!foodId) {
+    alert('Food ID missing');
+    return;
+  }
   
   const btn = document.querySelector('.submit-review-btn');
   const oldText = btn.textContent;
@@ -330,18 +349,23 @@ async function submitFoodReview() {
   btn.textContent = 'Submitting...';
   
   try {
+    console.log('Submitting review:', { foodId, rating, comment }); 
+    
     const res = await fetch(`${BASE_URL}/api/feedbacks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         customer_name: 'Customer',
-        rating,
-        comment,
+        rating: parseInt(rating),
+        comment: comment,
         menu_item_id: parseInt(foodId)
       })
     });
     
-    if (res.ok) {
+    const result = await res.json();
+    console.log('Submit review response:', result); 
+    
+    if (res.ok && result.success) {
       document.getElementById('reviewMessage').textContent = 'Review submitted successfully!';
       document.getElementById('reviewMessage').style.color = '#006400';
       document.getElementById('foodComment').value = '';
@@ -354,10 +378,11 @@ async function submitFoodReview() {
       // Reload reviews
       await loadFoodReviews(foodId);
     } else {
-      throw new Error('Failed to submit review');
+      throw new Error(result.error || 'Failed to submit review');
     }
   } catch (err) {
-    document.getElementById('reviewMessage').textContent = 'Failed to submit review. Please try again.';
+    console.error('Submit review error:', err);
+    document.getElementById('reviewMessage').textContent = `Failed to submit review: ${err.message}`;
     document.getElementById('reviewMessage').style.color = '#d32f2f';
   } finally {
     btn.disabled = false;
