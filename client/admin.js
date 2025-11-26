@@ -303,7 +303,7 @@ const loadFeedback = async () => {
             ${"<i class='far fa-star'></i>".repeat(5 - f.rating)}
           </td>
           <td>${f.comment}</td>
-          <td>${f.menu_item_name || 'N/A'}</td>
+          <td>${f.menu_item_name || `Food ID: ${f.menu_item_id || 'N/A'}`}</td>
           <td>${new Date(f.created_at).toLocaleDateString('en-NG')}</td>
         </tr>`
             )
@@ -314,8 +314,6 @@ const loadFeedback = async () => {
     console.error('Load feedback error:', err);
   }
 };
-
-
 const loadOrders = async () => {
   try {
     console.log('Loading orders...'); 

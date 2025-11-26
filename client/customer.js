@@ -281,7 +281,7 @@ async function loadFoodDetails(id) {
 
 async function loadFoodReviews(foodId) {
   try {
-    console.log('Loading reviews for food ID:', foodId); 
+    console.log('Loading reviews for food ID:', foodId);
     
     const res = await fetch(`${BASE_URL}/api/feedbacks?menu_item_id=${foodId}`);
     
@@ -292,7 +292,7 @@ async function loadFoodReviews(foodId) {
     const result = await res.json();
     const data = result.data || [];
     
-    console.log('Reviews loaded:', data); 
+    console.log('Food-specific reviews loaded:', data.length);
     
     const reviewsContainer = document.getElementById('foodReviews');
     if (data.length > 0) {
@@ -310,7 +310,7 @@ async function loadFoodReviews(foodId) {
     } else {
       reviewsContainer.innerHTML = `
         <div style="text-align:center;padding:40px;color:#888;grid-column:1/-1;">
-          <p>No reviews yet. Be the first to review this food!</p>
+          <p>No reviews yet for this food. Be the first to review!</p>
         </div>
       `;
     }
@@ -318,7 +318,8 @@ async function loadFoodReviews(foodId) {
     console.error('Error loading reviews:', err);
     document.getElementById('foodReviews').innerHTML = `
       <div style="text-align:center;padding:40px;color:#d32f2f;grid-column:1/-1;">
-        <p>Failed to load reviews: ${err.message}</p>
+        <p>Failed to load reviews</p>
+        <small>${err.message}</small>
       </div>
     `;
   }
@@ -349,7 +350,7 @@ async function submitFoodReview() {
   btn.textContent = 'Submitting...';
   
   try {
-    console.log('Submitting review:', { foodId, rating, comment }); 
+    console.log('Submitting review for food ID:', foodId);
     
     const res = await fetch(`${BASE_URL}/api/feedbacks`, {
       method: 'POST',
@@ -363,7 +364,7 @@ async function submitFoodReview() {
     });
     
     const result = await res.json();
-    console.log('Submit review response:', result); 
+    console.log('Submit review response:', result);
     
     if (res.ok && result.success) {
       document.getElementById('reviewMessage').textContent = 'Review submitted successfully!';
