@@ -1,0 +1,430 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.admin-body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f6f9;
+  color: #222;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ============ ADMIN LOGIN ============ */
+.login-box {
+  max-width: 420px;
+  margin: 100px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-box h2 {
+  color: #006400;
+  margin-bottom: 30px;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 15px;
+  margin: 12px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #006400;
+  box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
+}
+
+.login-box button {
+  background: #006400;
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.login-box button:hover {
+  background: #004d00;
+  transform: translateY(-2px);
+}
+
+#loginMsg {
+  margin-top: 15px;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+/* ============ ADMIN DASHBOARD ============ */
+.dashboard {
+  display: none;
+}
+
+.dash-header {
+  background: #006400;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.8rem;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dash-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+}
+
+.logout {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: #d32f2f;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.logout:hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+}
+
+.dash-nav {
+  background: #004d00;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dash-nav button {
+  background: none;
+  color: white;
+  padding: 12px 25px;
+  margin: 0 10px;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.dash-nav button.active,
+.dash-nav button:hover {
+  background: #ffbf00;
+  color: #006400;
+  transform: translateY(-2px);
+}
+
+/* ============ ADMIN TABS ============ */
+.tab {
+  display: none;
+  padding: 30px;
+  background: white;
+  margin: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.tab.active {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab h2 {
+  color: #006400;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ============ ADMIN FORMS ============ */
+.add-form {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid #e8f5e8;
+}
+
+.add-form h3 {
+  color: #006400;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.styled-input,
+.styled-select {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.styled-select {
+  height: 48px;
+}
+
+.styled-input:focus,
+.styled-select:focus {
+  outline: none;
+  border-color: #006400;
+  box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
+}
+
+.action-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.action-btn.add {
+  background: #006400;
+  color: white;
+}
+
+.action-btn.add:hover {
+  background: #004d00;
+  transform: translateY(-2px);
+}
+
+.action-btn.edit {
+  background: #ffbf00;
+  color: #333;
+}
+
+.action-btn.edit:hover {
+  background: #e6ac00;
+  transform: translateY(-2px);
+}
+
+.action-btn.delete {
+  background: #d32f2f;
+  color: white;
+}
+
+.action-btn.delete:hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+}
+
+/* ============ ADMIN TABLES ============ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+th,
+td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #f0f0f0;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 2px solid #006400;
+}
+
+tr:hover {
+  background: #f9f9f9;
+}
+
+/* Table buttons */
+table button {
+  padding: 8px 16px;
+  margin: 0 4px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+table button:nth-child(1) {
+  background: #ffbf00;
+  color: #333;
+}
+
+table button:nth-child(1):hover {
+  background: #e6ac00;
+  transform: translateY(-2px);
+}
+
+table button:nth-child(2) {
+  background: #d32f2f;
+  color: white;
+}
+
+table button:nth-child(2):hover {
+  background: #b71c1c;
+  transform: translateY(-2px);
+}
+
+/* ============ ADMIN STARS ============ */
+.admin-stars i {
+  color: #ffbf00;
+  font-size: 1.4rem;
+  margin: 0 3px;
+}
+
+.admin-stars i.far {
+  color: #ddd;
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+@media (max-width: 768px) {
+  .dash-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .dash-nav button {
+    display: inline-block;
+    min-width: 100px;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    margin: 0 4px;
+  }
+  
+  .tab {
+    padding: 20px 10px;
+    margin: 15px 5px;
+  }
+  
+  .add-form {
+    padding: 15px;
+  }
+  
+  .add-form input,
+  .add-form select {
+    font-size: 0.95rem;
+  }
+  
+  table {
+    font-size: 0.85rem;
+  }
+  
+  th,
+  td {
+    padding: 10px 6px;
+  }
+  
+  .login-box {
+    margin: 40px auto;
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dash-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .dash-nav {
+    padding: 10px 0;
+  }
+  
+  .dash-nav button {
+    padding: 8px 10px;
+    margin: 0 4px;
+    font-size: 0.9rem;
+    min-width: 90px;
+  }
+  
+  .tab h2 {
+    font-size: 1.5rem;
+  }
+  
+  .add-form {
+    padding: 15px;
+  }
+  
+  .add-form button {
+    width: 100%;
+    padding: 14px;
+  }
+  
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  th,
+  td {
+    min-width: 80px;
+    font-size: 0.8rem;
+    padding: 8px 4px;
+  }
+  
+  .login-box {
+    margin: 20px auto;
+    padding: 25px 15px;
+  }
+  
+  .login-box input {
+    padding: 12px;
+  }
+  
+  .login-box button {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+  
+  table button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin: 2px;
+  }
+}

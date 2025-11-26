@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadMenu();
     updateCart();
   }
+  
   if (document.getElementById('foodDetails')) {
     await initFoodPage();
   }
@@ -16,6 +17,7 @@ const loadMenu = async () => {
     const res = await fetch(`${BASE_URL}/api/menu`);
     const { data } = await res.json();
     const categories = [...new Set(data.map((i) => i.category_name))];
+
 
     document.getElementById('categories').innerHTML = categories
       .map(
@@ -36,27 +38,28 @@ const loadMenu = async () => {
             .filter((item) => item.category_name === cat)
             .map(
               (item) => `
-            <div class="item" onclick="window.location='food.html?id=${
-              item.id
-            }'" style="cursor:pointer;">
-              ${
-                item.image_url
-                  ? `<img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/300x200/006400/ffffff?text=No+Image'" alt="${item.name}">`
-                  : `<img src="https://via.placeholder.com/300x200/006400/ffffff?text=No+Image" class="item-img" alt="${item.name}">`
-              }
-              <div class="item-details">
-                <div class="item-name">${item.name}</div>
-                <div class="item-desc">${
-                  item.description || 'Freshly prepared'
-                }</div>
-                <div class="item-price">₦${Number(
-                  item.price
-                ).toLocaleString()}</div>
-                <button onclick="event.stopPropagation(); addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})" 
-                        class="add-to-cart">
-                  Add to Cart
-                </button>
+            <div class="item">
+              <!-- Clickable area for food details -->
+              <div class="item-clickable" onclick="window.location='food.html?id=${item.id}'">
+                ${
+                  item.image_url
+                    ? `<img src="${item.image_url}" class="item-img" onerror="this.src='https://via.placeholder.com/300x200/006400/ffffff?text=No+Image'" alt="${item.name}">`
+                    : `<img src="https://via.placeholder.com/300x200/006400/ffffff?text=No+Image" class="item-img" alt="${item.name}">`
+                }
+                <div class="item-details">
+                  <div class="item-name">${item.name}</div>
+                  <div class="item-desc">${
+                    item.description || 'Freshly prepared'
+                  }</div>
+                  <div class="item-price">₦${Number(
+                    item.price
+                  ).toLocaleString()}</div>
+                </div>
               </div>
+              <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})" 
+                      class="add-to-cart">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+              </button>
             </div>`
             )
             .join('')}
@@ -88,7 +91,46 @@ function addToCart(id, name, price) {
   }
   localStorage.setItem('asaCart', JSON.stringify(cart));
   updateCart();
-  alert(`${name} added to cart!`);
+  
+  showCartMessage(`${name} added to cart!`);
+}
+
+function showCartMessage(message) {
+  let messageEl = document.getElementById('cartMessage');
+  if (!messageEl) {
+    messageEl = document.createElement('div');
+    messageEl.id = 'cartMessage';
+    messageEl.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #006400;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 10000;
+      font-weight: 600;
+      animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(messageEl);
+    
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  messageEl.textContent = message;
+  messageEl.style.display = 'block';
+  
+  setTimeout(() => {
+    messageEl.style.display = 'none';
+  }, 2000);
 }
 
 function openOrderForm() {
@@ -186,7 +228,6 @@ async function initFoodPage() {
     await loadFoodReviews(foodId);
   }
   
-  // Initialize star rating for food page
   document.querySelectorAll('#rateStars i').forEach(star => {
     star.addEventListener('click', () => {
       const value = parseInt(star.dataset.value);
@@ -216,7 +257,11 @@ async function loadFoodDetails(id) {
             <div class="food-price">₦${Number(data.price).toLocaleString()}</div>
             <button onclick="addToCart(${data.id}, '${data.name.replace(/'/g, "\\'")}', ${data.price})" 
                     class="add-to-cart-big">
-              Add to Cart - ₦${Number(data.price).toLocaleString()}
+              <i class="fas fa-shopping-cart"></i> Add to Cart - ₦${Number(data.price).toLocaleString()}
+            </button>
+            <button onclick="addToCart(${data.id}, '${data.name.replace(/'/g, "\\'")}', ${data.price}); openOrderForm();" 
+                    class="add-to-cart-big buy-now-btn">
+              <i class="fas fa-bolt"></i> Buy Now
             </button>
           </div>
         </div>
