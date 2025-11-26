@@ -1,6 +1,4 @@
 const BASE_URL = 'https://restaurant-menu-1-60u0.onrender.com';
-
-let cart = [];
 const adminToken = localStorage.getItem('asaToken');
 let categories = [];
 
@@ -31,7 +29,7 @@ window.login = async () => {
       msg.style.color = '#d32f2f';
     }
   } catch (err) {
-    msg.textContent = 'Server is waking up... wait 30–50s on first try';
+    msg.textContent = 'Server waking up... wait 30–50s';
     msg.style.color = '#ff6b00';
   }
 };
@@ -49,13 +47,13 @@ window.openTab = (id) => {
   document
     .querySelectorAll('.dash-nav button')
     .forEach((b) => b.classList.remove('active'));
+
   document.getElementById(id)?.classList.add('active');
   document
     .querySelector(`button[onclick="openTab('${id}')"]`)
     ?.classList.add('active');
 
   if (id === 'menu') loadMenuItems();
-  loadMenuItems();
   if (id === 'categories') loadCategories();
   if (id === 'feedback') loadFeedback();
   if (id === 'orders') loadOrders();
@@ -73,7 +71,7 @@ const loadCategories = async () => {
     const { data } = await res.json();
     categories = data || [];
 
-    // Update dropdown
+    // Dropdown
     const dropdown = document.getElementById('newCategoryId');
     if (dropdown) {
       dropdown.innerHTML =
@@ -81,25 +79,26 @@ const loadCategories = async () => {
         data.map((c) => `<option value="${c.id}">${c.name}</option>`).join('');
     }
 
-    // Update table
+    // Table
     safeSetHTML(
       '#catTable tbody',
-      data
-        .map(
-          (c) => `
-      <tr>
-        <td>${c.name}</td>
-        <td>
-          <button onclick="editCategory(${c.id}, '${c.name.replace(
-            /'/g,
-            "\\'"
-          )}')">Edit</button>
-          <button onclick="deleteCategory(${c.id})">Delete</button>
-        </td>
-      </tr>
-    `
-        )
-        .join('') || "<tr><td colspan='2'>No categories</td></tr>"
+      data.length
+        ? data
+            .map(
+              (c) => `
+        <tr>
+          <td>${c.name}</td>
+          <td>
+            <button onclick="editCategory(${c.id}, '${c.name.replace(
+                /'/g,
+                "\\'"
+              )}')">Edit</button>
+            <button onclick="deleteCategory(${c.id})">Delete</button>
+          </td>
+        </tr>`
+            )
+            .join('')
+        : "<tr><td colspan='2' style='text-align:center;padding:40px;color:#888'>No categories</td></tr>"
     );
   } catch (err) {
     console.error('Load categories error:', err);
@@ -135,14 +134,12 @@ window.addCategory = async () => {
     if (res.ok) {
       nameInput.value = '';
       alert(`"${name}" added successfully!`);
-
       await loadCategories();
-      setTimeout(loadCategories, 500);
     } else {
       alert('Failed: ' + (result.error || 'Try again'));
     }
   } catch (err) {
-    alert('No internet or server sleeping');
+    alert('No internet or server error');
   } finally {
     btn.disabled = false;
     btn.textContent = oldText;
@@ -160,10 +157,12 @@ window.editCategory = async (id, oldName) => {
       },
       body: JSON.stringify({ name }),
     });
+
     await fetch(`${BASE_URL}/api/category/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${adminToken}` },
     });
+
     loadCategories();
     loadMenuItems();
   }
@@ -209,9 +208,11 @@ window.addMenuItem = async () => {
     }),
   });
 
-  ['newName', 'newPrice', 'newDesc', 'newImage'].forEach(
-    (id) => (document.getElementById(id).value = '')
-  );
+  ['newName', 'newPrice', 'newDesc', 'newImage'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
   loadMenuItems();
 };
 
@@ -228,6 +229,7 @@ window.editMenuItem = (
   const price = prompt('Price:', oldPrice);
   const desc = prompt('Description:', oldDesc || '');
   const img = prompt('Image URL:', oldImg || '');
+
   if (name && price !== null) {
     fetch(`${BASE_URL}/api/menu/${id}`, {
       method: 'PUT',
@@ -257,59 +259,80 @@ window.deleteMenuItem = (id) => {
 };
 
 const loadMenuItems = async () => {
-  const { data } = await (await fetch(`${BASE_URL}/api/menu`)).json();
-  safeSetHTML(
-    '#menuTable tbody',
-    data
-      .map(
-        (i) => `
-    <tr>
-      <td>${i.name}</td>
-      <td>₦${Number(i.price).toLocaleString()}</td>
-      <td>${i.category_name}</td>
-      <td>${i.is_available ? 'Yes' : 'No'}</td>
-      <td>
-        <button onclick="editMenuItem(${i.id},'${i.name.replace(
-          /'/g,
-          "\\'"
-        )}',${i.price},${i.category_id},'${(i.description || '').replace(
-          /'/g,
-          "\\'"
-        )}','${i.image_url || ''}',${i.is_available})" 
-                style="background:#ffbf00;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">Edit</button>
-        <button onclick="deleteMenuItem(${i.id})" 
-                style="background:#d32f2f;color:white;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">Delete</button>
-      </td>
-    </tr>`
-      )
-      .join('')
-  );
+  try {
+    const res = await fetch(`${BASE_URL}/api/menu`);
+    const { data } = await res.json();
+
+    safeSetHTML(
+      '#menuTable tbody',
+      data.length
+        ? data
+            .map(
+              (i) => `
+        <tr>
+          <td>${i.name}</td>
+          <td>₦${Number(i.price).toLocaleString()}</td>
+          <td>${i.category_name}</td>
+          <td>${i.is_available ? 'Yes' : 'No'}</td>
+          <td>
+            <button onclick="editMenuItem(
+              ${i.id},
+              '${i.name.replace(/'/g, "\\'")}',
+              ${i.price},
+              ${i.category_id},
+              '${(i.description || '').replace(/'/g, "\\'")}',
+              '${i.image_url || ''}',
+              ${i.is_available}
+            )"
+            style="background:#ffbf00;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;color:#333;">
+              Edit
+            </button>
+            <button onclick="deleteMenuItem(${i.id})"
+              style="background:#d32f2f;color:white;padding:6px 12px;border:none;border-radius:5px;cursor:pointer;">
+              Delete
+            </button>
+          </td>
+        </tr>`
+            )
+            .join('')
+        : "<tr><td colspan='5' style='text-align:center;padding:40px;color:#888'>No menu items</td></tr>"
+    );
+  } catch (err) {
+    console.error('Load menu error:', err);
+  }
 };
 
-// ============= FEEDBACK & ORDERS =============
+// ============= FEEDBACK =============
 const loadFeedback = async () => {
-  const { data = [] } = await (await fetch(`${BASE_URL}/api/feedbacks`)).json();
+  try {
+    const res = await fetch(`${BASE_URL}/api/feedbacks`);
+    const { data = [] } = await res.json();
 
-  safeSetHTML(
-    '#feedbackTable tbody',
-    data
-      .map(
-        (f) => `
-    <tr>
-      <td>${f.customer_name}</td>
-      <td class="admin-stars">
-        ${"<i class='fas fa-star'></i>".repeat(f.rating)}
-        ${"<i class='far fa-star'></i>".repeat(5 - f.rating)}
-      </td>
-      <td>${f.comment}</td>
-      <td>${new Date(f.created_at).toLocaleDateString()}</td>
-    </tr>
-  `
-      )
-      .join('') ||
-      "<tr><td colspan='4' style='text-align:center;padding:30px;color:#888'>No reviews yet</td></tr>"
-  );
+    safeSetHTML(
+      '#feedbackTable tbody',
+      data.length
+        ? data
+            .map(
+              (f) => `
+        <tr>
+          <td>${f.customer_name}</td>
+          <td class="admin-stars">
+            ${"<i class='fas fa-star'></i>".repeat(f.rating)}
+            ${"<i class='far fa-star'></i>".repeat(5 - f.rating)}
+          </td>
+          <td>${f.comment}</td>
+          <td>${new Date(f.created_at).toLocaleDateString('en-NG')}</td>
+        </tr>`
+            )
+            .join('')
+        : "<tr><td colspan='4' style='text-align:center;padding:50px;color:#888'>No reviews yet</td></tr>"
+    );
+  } catch (err) {
+    console.error('Load feedback error:', err);
+  }
 };
+
+// ============= ORDERS =============
 const loadOrders = async () => {
   try {
     const res = await fetch(`${BASE_URL}/api/orders`, {
@@ -317,37 +340,50 @@ const loadOrders = async () => {
     });
     const { data = [] } = await res.json();
 
-    // Sort newest first
     data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     safeSetHTML(
       '#ordersTable tbody',
-      data
-        .map(
-          (o) => `
-      <tr>
-        <td>${o.id}</td>
-        <td>${o.customer_name}</td>
-        <td>${o.customer_phone}</td>
-        <td>${o.delivery_address || '-'}</td>
-        <td>₦${Number(o.total_price).toLocaleString()}</td>
-        <td>${new Date(o.created_at).toLocaleDateString()} <br>
-            <small>${new Date(o.created_at).toLocaleTimeString()}</small></td>
+      data.length
+        ? data
+            .map((o) => {
+              const items = JSON.parse(o.items || '[]');
+              const note = o.note
+                ? `<br><br><strong style="color:#d32f2f;font-size:1.1em;">Note: ${o.note}</strong>`
+                : '';
 
-        <td style="max-width:300px;word-wrap:break-word;">
-          ${(o.items || []).map((x) => `${x.name} ×${x.quantity}`).join('<br>')}
-        </td>
-      </tr>
-    `
-        )
-        .join('') ||
-        "<tr><td colspan='7' style='text-align:center;padding:40px;color:#888'>No orders yet</td></tr>"
+              return `
+        <tr>
+          <td><strong>#${o.id}</strong></td>
+          <td>${o.customer_name}</td>
+          <td>${o.customer_phone}</td>
+          <td>${o.delivery_address || '-'}</td>
+          <td><strong>₦${Number(o.total_price).toLocaleString()}</strong></td>
+          <td>
+            ${new Date(o.created_at).toLocaleDateString('en-NG')}<br>
+            <small>${new Date(o.created_at).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}</small>
+          </td>
+          <td style="line-height:1.9;">
+            ${items.map((x) => `• ${x.name} ×${x.quantity}`).join('<br>')}
+            ${note}
+          </td>
+        </tr>`;
+            })
+            .join('')
+        : "<tr><td colspan='7' style='text-align:center;padding:80px;color:#888;font-size:1.1rem;'>No orders yet</td></tr>"
     );
   } catch (err) {
-    console.error('Failed to load orders:', err);
+    safeSetHTML(
+      '#ordersTable tbody',
+      "<tr><td colspan='7' style='text-align:center;padding:80px;color:#d32f2f;'>Failed to load orders</td></tr>"
+    );
   }
 };
 
+// ============= LOAD ON LOGIN =============
 if (document.getElementById('loginBox') && adminToken) {
   document.getElementById('loginBox').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
