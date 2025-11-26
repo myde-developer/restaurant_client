@@ -41,17 +41,11 @@ window.logout = () => {
 
 // ============= TABS =============
 window.openTab = (id) => {
-  document
-    .querySelectorAll('.tab')
-    .forEach((t) => t.classList.remove('active'));
-  document
-    .querySelectorAll('.dash-nav button')
-    .forEach((b) => b.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+  document.querySelectorAll('.dash-nav button').forEach((b) => b.classList.remove('active'));
 
   document.getElementById(id)?.classList.add('active');
-  document
-    .querySelector(`button[onclick="openTab('${id}')"]`)
-    ?.classList.add('active');
+  document.querySelector(`button[onclick="openTab('${id}')"]`)?.classList.add('active');
 
   if (id === 'menu') loadMenuItems();
   if (id === 'categories') loadCategories();
@@ -89,10 +83,7 @@ const loadCategories = async () => {
         <tr>
           <td>${c.name}</td>
           <td>
-            <button onclick="editCategory(${c.id}, '${c.name.replace(
-                /'/g,
-                "\\'"
-              )}')">Edit</button>
+            <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')">Edit</button>
             <button onclick="deleteCategory(${c.id})">Delete</button>
           </td>
         </tr>`
@@ -187,8 +178,7 @@ window.addMenuItem = async () => {
   const price = document.getElementById('newPrice')?.value;
   const description = document.getElementById('newDesc')?.value.trim() || null;
   const image_url = document.getElementById('newImage')?.value.trim() || null;
-  const is_available =
-    document.getElementById('newAvailable')?.value === 'true';
+  const is_available = document.getElementById('newAvailable')?.value === 'true';
 
   if (!category_id || !name || !price) return alert('Fill required fields');
 
@@ -216,15 +206,7 @@ window.addMenuItem = async () => {
   loadMenuItems();
 };
 
-window.editMenuItem = (
-  id,
-  oldName,
-  oldPrice,
-  catId,
-  oldDesc,
-  oldImg,
-  avail
-) => {
+window.editMenuItem = (id, oldName, oldPrice, catId, oldDesc, oldImg, avail) => {
   const name = prompt('Name:', oldName);
   const price = prompt('Price:', oldPrice);
   const desc = prompt('Description:', oldDesc || '');
@@ -321,11 +303,12 @@ const loadFeedback = async () => {
             ${"<i class='far fa-star'></i>".repeat(5 - f.rating)}
           </td>
           <td>${f.comment}</td>
+          <td>${f.menu_item_name || 'N/A'}</td>
           <td>${new Date(f.created_at).toLocaleDateString('en-NG')}</td>
         </tr>`
             )
             .join('')
-        : "<tr><td colspan='4' style='text-align:center;padding:50px;color:#888'>No reviews yet</td></tr>"
+        : "<tr><td colspan='5' style='text-align:center;padding:50px;color:#888'>No reviews yet</td></tr>"
     );
   } catch (err) {
     console.error('Load feedback error:', err);

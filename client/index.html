@@ -2,19 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Our Heritage Kitchen - Authentic Nigerian Cuisine</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap"
-      rel="stylesheet" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link
-      rel="stylesheet"
-      href="main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="main.css" />
   </head>
   <body>
     <header class="header">
@@ -24,95 +16,25 @@
       </div>
     </header>
 
-    <nav
-      class="categories"
-      id="categories"></nav>
-    <main
-      class="container menu-container"
-      id="menu"></main>
-
-    <section class="reviews-section">
-      <div class="container">
-        <h2 class="section-title">Customer Reviews</h2>
-        <div
-          id="reviews-container"
-          class="reviews-grid"></div>
-
-        <div class="review-form">
-          <h3>Leave a Review</h3>
-          <form id="feedbackForm">
-            <input
-              type="text"
-              name="customer_name"
-              placeholder="Your Name"
-              required />
-            <div class="rating">
-              <span>Rate us:</span>
-              <div class="stars">
-                <i
-                  class="far fa-star"
-                  data-value="1"></i>
-                <i
-                  class="far fa-star"
-                  data-value="2"></i>
-                <i
-                  class="far fa-star"
-                  data-value="3"></i>
-                <i
-                  class="far fa-star"
-                  data-value="4"></i>
-                <i
-                  class="far fa-star"
-                  data-value="5"></i>
-              </div>
-            </div>
-            <textarea
-              name="comment"
-              placeholder="Your comment..."
-              rows="4"
-              required></textarea>
-            <button type="submit">Submit Review</button>
-          </form>
-          <p id="formMessage"></p>
-        </div>
-      </div>
-    </section>
+    <nav class="categories" id="categories"></nav>
+    <main class="container menu-container" id="menu"></main>
 
     <footer class="footer">
       <div class="container">
-        <p>
-          Our Heritage Kitchen • Plot 24, Adeola Odeku, Victoria Island, Lagos
-        </p>
+        <p>Our Heritage Kitchen • Plot 24, Adeola Odeku, Victoria Island, Lagos</p>
         <p>+234 813 957 4794 • Open Daily 11:00 AM – 11:00 PM</p>
       </div>
     </footer>
 
-    <div
-      class="cart-float"
-      onclick="openOrderForm()">
+    <div class="cart-float" onclick="openOrderForm()">
       <i class="fas fa-shopping-cart"></i>
-      <span
-        class="cart-badge"
-        id="floatCount"
-        >0</span
-      >
+      <span class="cart-badge" id="floatCount">0</span>
     </div>
 
-    <div
-      id="orderForm"
-      class="order-modal">
+    <div id="orderForm" class="order-modal">
       <div class="order-modal-content">
-        <span
-          class="close-btn"
-          onclick="closeOrderForm()"
-          >×</span
-        >
-        <h2
-          style="
-            color: #006400;
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-          ">
+        <span class="close-btn" onclick="closeOrderForm()">×</span>
+        <h2 style="color: #006400; text-align: center; font-family: 'Playfair Display', serif;">
           Complete Your Order
         </h2>
         <p style="text-align: center; color: #555; margin-bottom: 20px">
@@ -128,42 +50,17 @@
         </div>
 
         <form id="customerForm">
-          <input
-            type="text"
-            id="cname"
-            placeholder="Full Name"
-            required />
-          <input
-            type="tel"
-            id="cphone"
-            placeholder="Phone Number (e.g. 09012345678)"
-            required />
-          <input
-            type="text"
-            id="caddress"
-            placeholder="Delivery Address"
-            required />
-          <textarea
-            id="cnote"
-            placeholder="Extra note? (e.g. No pepper, Gate code)"
-            rows="2"></textarea>
-          <button
-            type="button"
-            onclick="placeOrder()"
-            class="beautiful-order-btn">
+          <input type="text" id="cname" placeholder="Full Name" required />
+          <input type="tel" id="cphone" placeholder="Phone Number (e.g. 09012345678)" required />
+          <input type="text" id="caddress" placeholder="Delivery Address" required />
+          <textarea id="cnote" placeholder="Extra note? (e.g. No pepper, Gate code)" rows="2"></textarea>
+          <button type="button" onclick="placeOrder()" class="beautiful-order-btn">
             Place Order Now
           </button>
         </form>
 
-        <div
-          style="
-            text-align: center;
-            margin-top: 20px;
-            color: #006400;
-            font-size: 14px;
-          ">
-          <strong>Our Heritage Kitchen</strong><br />Fresh • Authentic •
-          Delivered Hot
+        <div style="text-align: center; margin-top: 20px; color: #006400; font-size: 14px;">
+          <strong>Our Heritage Kitchen</strong><br />Fresh • Authentic • Delivered Hot
         </div>
       </div>
     </div>
