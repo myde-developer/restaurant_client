@@ -95,6 +95,23 @@ function addToCart(id, name, price) {
   showCartMessage(`${name} added to cart!`);
 }
 
+function clearCart() {
+  if (cart.length === 0) {
+    alert('Your cart is already empty!');
+    return;
+  }
+  
+  if (confirm('Are you sure you want to clear your cart? This will remove all items.')) {
+    cart = [];
+    localStorage.removeItem('asaCart');
+    updateCart();
+    
+    showCartMessage('Cart cleared successfully!');
+    
+    closeOrderForm();
+  }
+}
+
 function showCartMessage(message) {
   let messageEl = document.getElementById('cartMessage');
   if (!messageEl) {
@@ -393,6 +410,7 @@ async function submitFoodReview() {
 
 // ============ GLOBAL FUNCTIONS ============
 window.addToCart = addToCart;
+window.clearCart = clearCart;
 window.openOrderForm = openOrderForm;
 window.closeOrderForm = closeOrderForm;
 window.placeOrder = placeOrder;
