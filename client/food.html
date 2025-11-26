@@ -44,47 +44,43 @@
           id="foodReviews"
           class="reviews-grid"></div>
 
-        <div
-          class="review-form"
-          style="margin-top: 50px; max-width: 700px">
-          <h3 style="color: #006400; text-align: center">Rate This Food</h3>
-          <div
-            class="rating"
-            style="justify-content: center">
-            <span style="font-weight: 600; margin-right: 15px"
-              >Your rating:</span
-            >
-            <div
-              class="stars"
-              id="rateStars">
-              <i
-                class="far fa-star"
-                data-value="1"></i>
-              <i
-                class="far fa-star"
-                data-value="2"></i>
-              <i
-                class="far fa-star"
-                data-value="3"></i>
-              <i
-                class="far fa-star"
-                data-value="4"></i>
-              <i
-                class="far fa-star"
-                data-value="5"></i>
-            </div>
-          </div>
-          <textarea
-            id="foodComment"
-            placeholder="Tell us what you think..."
-            rows="5"></textarea>
-          <button
-            onclick="submitFoodReview()"
-            class="submit-review-btn">
-            Submit Review
-          </button>
-          <p id="reviewMessage"></p>
-        </div>
+<div class="review-form" style="margin-top: 50px; max-width: 700px">
+  <h3 style="color: #006400; text-align: center">Rate This Food</h3>
+  
+  <div style="margin-bottom: 20px;">
+    <input 
+      type="text" 
+      id="customerName"
+      placeholder="Your Name (optional)"
+      style="width: 100%; padding: 14px; border: 2px solid #006400; border-radius: 12px; font-size: 1rem;"
+    />
+  </div>
+  
+  <div class="rating" style="justify-content: center">
+    <span style="font-weight: 600; margin-right: 15px">Your rating:</span>
+    <div class="stars" id="rateStars">
+      <i class="far fa-star" data-value="1"></i>
+      <i class="far fa-star" data-value="2"></i>
+      <i class="far fa-star" data-value="3"></i>
+      <i class="far fa-star" data-value="4"></i>
+      <i class="far fa-star" data-value="5"></i>
+    </div>
+  </div>
+  
+  <textarea
+    id="foodComment"
+    placeholder="Tell us what you think..."
+    rows="5"
+    style="width: 100%; padding: 14px; border: 2px solid #006400; border-radius: 12px; font-size: 1rem; margin: 12px 0;"
+  ></textarea>
+  
+  <button
+    onclick="submitFoodReview()"
+    class="submit-review-btn">
+    Submit Review
+  </button>
+  <p id="reviewMessage"></p>
+</div>
       </div>
     </div>
 
