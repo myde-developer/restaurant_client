@@ -347,6 +347,7 @@ async function submitFoodReview() {
   const foodId = urlParams.get('id');
   const rating = document.querySelectorAll('#rateStars i.fas').length;
   const comment = document.getElementById('foodComment').value.trim();
+  const customerName = document.getElementById('customerName').value.trim();
   
   if (!rating) {
     alert('Please select a rating');
@@ -368,12 +369,13 @@ async function submitFoodReview() {
   
   try {
     console.log('Submitting review for food ID:', foodId);
+    console.log('Customer name:', customerName || 'Not provided');
     
     const res = await fetch(`${BASE_URL}/api/feedbacks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        customer_name: 'Customer',
+        customer_name: customerName, 
         rating: parseInt(rating),
         comment: comment,
         menu_item_id: parseInt(foodId)
@@ -386,14 +388,17 @@ async function submitFoodReview() {
     if (res.ok && result.success) {
       document.getElementById('reviewMessage').textContent = 'Review submitted successfully!';
       document.getElementById('reviewMessage').style.color = '#006400';
+      
+      // Clear the form
       document.getElementById('foodComment').value = '';
+      document.getElementById('customerName').value = '';
       
       // Reset stars
       document.querySelectorAll('#rateStars i').forEach(star => {
         star.className = 'far fa-star';
       });
       
-      // Reload reviews
+      // Reload reviews to show the new one with the correct name
       await loadFoodReviews(foodId);
     } else {
       throw new Error(result.error || 'Failed to submit review');
